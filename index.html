@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+
+<!-- Fig. 14.26: cannon.html -->
+<!-- Cannon Game HTML5 document. -->
+<html>
+   <head>
+      <meta charset = "utf-8">
+      <link rel="stylesheet" type="text/css" href="style.css">	
+      <title>Cannon Game</title>
+      <style type = "text/css">
+         canvas { border: 1px solid black; }
+      </style>
+      
+      <link href="Styles/ui-lightness/jquery-ui-1.8.13.custom.css" rel="stylesheet" type="text/css" />
+      
+      <!-- Validator --> 
+      <script src="Scripts/jquery-1.6.1.min.js" type="text/javascript"></script>
+	  <script src="Scripts/jquery-ui-1.8.13.custom.min.js" type="text/javascript"></script>
+      <script src="Scripts/jquery.validate.min.js" type="text/javascript"></script>
+      <script src="Scripts/jquery.validate.wrapper.js" type="text/javascript"></script>
+      
+      <!-- DatePicker -->
+      <link rel="stylesheet" href="Styles/jquery.ui.all.css">
+      <script src="Scripts/jquery-1.7.2.js"></script>
+	  <script src="Scripts/jquery.ui.core.js"></script>
+	  <script src="Scripts/jquery.ui.widget.js"></script>
+	  <script src="Scripts/jquery.ui.datepicker.js"></script>
+ 
+      <!-- Cannon Game -->
+	  <script src="Scripts/cannon.js" type="application/javascript"></script>
+	  
+	  
+	  
+	  <script type="text/javascript">
+	  		
+	  		
+	  		// DataBase
+	  		var DB = new Array(10);
+	  		var counter=1;
+	  		var current=0;
+	  		
+	  		
+	  		for (var i = 0; i < 10; ++i){
+	  			DB[i] = new Object();
+      			DB[i].user = null;
+      			DB[i].pass = null;
+      		}
+      		
+      		DB[0].user = 'test';
+      		DB[0].pass = 'test2010';
+      		DB[0].fname = 'Guest';
+      		
+      		
+      		function checkLogin(){
+      			for (var i = 0; i < 30; ++i){
+      				if(document.getElementById('username').value==DB[i].user &&
+      					document.getElementById('password').value==DB[i].pass){
+      			  		toggle_visibility('cannonGame');
+      			  		current = i;
+      			  	}
+      			}
+      		}
+      		
+      		function register(){
+      			DB[counter].user = document.getElementById('username2').value;
+      			DB[counter].pass = document.getElementById('password2').value;
+      			DB[counter].fname = document.getElementById('firstName').value;
+				DB[counter].lname = document.getElementById('lastName').value;
+				DB[counter].bdate = document.getElementById('datepicker').value;
+				counter++;
+				toggle_visibility('Login');
+
+      		}
+	  		
+	   		function resettoggle() {
+				var e = document.getElementById('cannonGame').style.display = 'none';
+				e = document.getElementById('Login').style.display = 'none';
+				e = document.getElementById('Register').style.display = 'none';
+				document.getElementById('About').style.display='none'; }
+
+			function toggle_visibility(id) {
+       			var e = document.getElementById(id);
+       			//var e1 = document.getElementById('page_content');
+       			var i=0;
+       			if(e.style.display == 'block' ){	
+       	  			document.getElementById('home').style.display='block';
+
+          			e.style.display = 'none';
+       			}
+       			else{
+       				document.getElementById('Home').style.display='none';
+		  			document.getElementById('Login').style.display='none';
+		  			document.getElementById('Register').style.display='none';
+		  			document.getElementById('cannonGame').style.display='none';
+		  			//document.getElementById('About').style.display='none';}
+          			e.style.display = 'block';
+       			}
+    		}				
+			
+			function findNumbers(id) {
+				if(id=='register'){
+					var e = document.getElementById("firstName");
+					var m = (e.value).match(/\d+/g);
+					if(m != null  )
+						alert("pp");
+				}
+			}
+	   </script>
+	   
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        // 1. prepare the validation rules and messages.
+        var rules = {
+        	username: "required",
+            password: {
+                required: true,
+                minlength: 8
+            },
+            firstName: {
+            	required: true,
+            	accept: "[a-zA-Z]+" 
+           	},
+            lastName: "required",
+            birthDate:"required"
+            
+        };
+        var messages = {
+        	username: "Username is requried",
+            password: {
+                required: "Password is required",
+                minlength: "Password needs to be at least length 8"
+            },
+            firstName: {
+            	required: "FirstName is required",
+            	accept: "FirstName cannot contain numbers"
+            },
+            lastName: "LastName is required",
+            birthDate:"BirthDate is required"
+        };
+
+        // 2. Initiate the validator
+        var validator = new jQueryValidatorWrapper("register",rules, messages);
+
+		 var rules = {
+        	username: "required",
+            password: {
+                required: true,
+                minlength: 8
+            },
+            
+        };
+        var messages = {
+        	username: "Username is requried",
+            password: {
+                required: "Password is required",
+                minlength: "Password needs to be at least length 8"
+            },
+        };
+
+		var Lvalidator = new jQueryValidatorWrapper("login",rules, messages);
+
+
+        // 3. Set the click event to do the validation
+        $("#registerBtn").click(function () {
+            if (!validator.validate())
+                return;
+
+            register();
+        });
+        
+        $("#loginBtn").click(function () {
+            if (!Lvalidator.validate())
+                return;
+
+            checkLogin();
+        });
+
+    });
+       
+       
+       $(function() {
+		$( "#datepicker" ).datepicker({
+			changeMonth: true,
+			changeYear: true
+		});
+	});
+	 
+	$(document).ready(function() { 
+ 
+    //select all the a tag with name equal to modal
+    $('a[name=modal]').click(function(e) {
+        //Cancel the link behavior
+        e.preventDefault();
+        //Get the A tag
+        var id = $(this).attr('href');
+     
+        //Get the screen height and width
+        var maskHeight = $(document).height();
+        var maskWidth = $(window).width();
+     
+        //Set height and width to mask to fill up the whole screen
+        $('#mask').css({'width':maskWidth,'height':maskHeight});
+         
+        //transition effect    
+        $('#mask').fadeIn(1000);   
+        $('#mask').fadeTo("slow",0.8); 
+     
+        //Get the window height and width
+        var winH = $(window).height();
+        var winW = $(window).width();
+               
+        //Set the popup window to center
+        $(id).css('top',  winH/2-$(id).height()/2);
+        $(id).css('left', winW/2-$(id).width()/2);
+     
+        //transition effect
+        $(id).fadeIn(2000);
+     
+    });
+     
+    //if close button is clicked
+    $('.window .close').click(function (e) {
+        //Cancel the link behavior
+        e.preventDefault();
+        $('#mask, .window').hide();
+    });    
+     
+    //if mask is clicked
+    $('#mask').click(function () {
+        $(this).hide();
+        $('.window').hide();
+    });        
+     
+	});
+	 
+ </script>
+	   
+   </head>
+   <body onload="resettoggle();">
+      <audio id = "blockerSound" preload = "auto">
+         <source src = "Sounds/blocker_hit.ogg" type = "audio/ogg"></audio>
+      <audio id = "targetSound" preload = "auto">
+         <source src = "Sounds/targetExplo.ogg" type = "audio/ogg"></audio>
+      <audio id = "cannonSound" preload = "auto">
+         <source src = "Sounds/cannon_fire.ogg" type = "audio/ogg"></audio>
+      <audio id = "levelMusic" preload = "auto">
+         <source src = "Sounds/2.ogg" type = "audio/ogg"></audio>
+      <audio id = "airplaneExplo" preload = "auto">
+         <source src = "Sounds/airplaneExplo.ogg" type = "audio/ogg"></audio>
+	  <audio id = "missileExplo" preload = "auto">
+         <source src = "Sounds/missileExplo1.ogg" type = "audio/ogg"></audio>
+	  <audio id = "bonus" preload = "auto">
+         <source src = "Sounds/bonus.ogg" type = "audio/ogg"></audio>
+      <audio id = "scream" preload = "auto">
+         <source src = "Sounds/scream02.ogg" type = "audio/ogg"></audio>
+
+
+         
+      <div id="masthead">
+      <div style="float:left; margin-left:25%;"><img id="logo" src="Images\cannonBall logo.png" alt="logo" style="width:60px; height:60px;"/></div>
+      <div style=" margin-left:10px;"><h2 style="">CannonBall Game</h2></div> <div></div>
+	  </div>
+	  <div id="top_nav">
+	  	<nav>
+    		<ul class="ul">
+      			<li class="li"><a href="#" id="homeH" class="about png_bg ir" onclick="toggle_visibility('Home');">Home</a></li>
+      			<li class="li"><a href="#" id="loginH" class="what png_bg ir" onclick="toggle_visibility('Login');">Login/Register</a></li>
+      			<li class="li"><a href="#dialog" name="modal" onclick="toggle_visibility('about');">About</a></li>
+      			
+    		</ul>
+  		</nav>
+	  </div>
+	  <div id="container">
+	  	<div id="page_content">
+	  		
+	  		<!-- ## Wellcome Page ## -->
+	  		<div class="wellcome" id="Home">
+	  			<div style="margin:0 auto;">
+	  			<div style="width:45%; float:left;">
+	  			<h2 style="font-size:25px;">Cannon ball Game</h2>
+	  			
+	  			<span class="ico">Our world is being attacked by rectangle aliens! It is up to you to hold our capital city while we gather our forces.
+	  			Use your cannonballs to destroy the creatures before they can reach the city. Oh and watch out! Don`t hit any of our planes!<br><br></span>
+	  			</div>
+	  			<div style="float: right;">
+	  				<img id="wellcome1" src="Images\wellcome2.jpg" alt="wellcome1" style="	border-width:5px; border-style:solid; border-color:black; margin-top:10px; margin-right:10px;"/>
+	  			</div>
+				</div>
+				<div style="margin:0 auto;clear: both;">
+				<button id="LoginBtn" type=submit class="button green" style="margin-left:18%; margin-top:20px; font: 24px/100% Arial, Helvetica, sans-serif;" onclick="toggle_visibility('Login');">Login</button>
+				<button id="RegisterBtn" type=submit class="button green" style="margin-left:10%;font: 24px/100% Arial, Helvetica, sans-serif;" onclick="toggle_visibility('Register');">Register</button>
+				</div>
+	  		</div>
+	  		
+	  		<!-- ## Login Page ## -->
+	  		<div class="div" id="Login">
+	  			<h1>Login </h1>
+	  	    	<form method="post" action="" id="login">
+	  	    		<fieldset class="fieldset">
+						<label for="username">Username <span class="ico"><img src="Images\user.png" alt="Username Icon" style="margin-left:5px;" /></span></label>
+						<input type="text" name="username" id="username" autofocus>						
+						<label for="password">Password <span class="ico"><img src="Images\pass.png" alt="Password Icon" style="margin-left:5px;"/></span></label>
+						<input type="password" name="password" id="password">
+					</fieldset>
+					<fieldset id="loginLine">
+                    	<span class="password"><a href="#" class="pass">Forgot Password</a></span>
+                    	<button id="loginBtn" type="button" class="button gray">>>&nbsp;&nbsp;&nbsp;GO</button>
+                    </fieldset>
+           		</form>
+	  		</div>
+	  		
+	  		<!-- ## Register Page ## -->
+	  		<div class="div" id="Register">
+	  			<h1>Register </h1>
+	  	    	<form id="register" method="post" action="#" >
+	  	    		<fieldset class="fieldset">
+						<label for="username">Username <span class="ico"><img src="Images\user.png" alt="Username Icon" style="margin-left:5px;" /></span></label>
+						<input type="text" name="username" id="username2" autofocus>
+						<label for="password">Password <span class="ico"><img src="Images\pass.png" alt="Password Icon" style="margin-left:5px;"/></span></label>
+						<input type="password" name="password" id="password2">
+						<label for="firstName">First-Name <span class="ico"></span></label>
+						<input type="text" name="firstName" id="firstName" autofocus>
+						<label for="lastName">Last-Name <span class="ico"></span></label>
+						<input type="text" name="lastName" id="lastName" autofocus>
+						<label for="birthDate">BirthDate <span class="ico"></span></label>
+						<input type="date" name="birthDate" id="datepicker" autofocus>
+
+
+					</fieldset>
+					<fieldset id="loginLine">
+                       	<button id="registerBtn" type="button" class="button gray" onclick="">>>&nbsp;&nbsp;&nbsp;Submit</button>
+                    </fieldset>
+           		</form>
+	  		</div>
+
+	  	
+	  		<!-- ## Game Page ## -->
+	  		<div id="cannonGame">
+      		<canvas id = "theCanvas" width = "600" height = "480"></canvas> 
+      		<img id="bluecity1" src="Images\bluecity1.jpg" alt="bluecity1" hidden/>
+      		<img id="missile1" src="Images\missile1.png" alt="missile1" hidden/>
+      		<img id="missile2" src="Images\missile2.png" alt="missile2" hidden/>
+      		<img id="missile3" src="Images\missile3.png" alt="missile3" hidden/>
+      		<img id="missileX" src="Images\missileX.png" alt="missileX" hidden/>
+      		<img id="missileX1" src="Images\missileX1.png" alt="missileX1" hidden/>
+      		<img id="missileXg" src="Images\missileXg.png" alt="missileXg" hidden/>
+      		<img id="missileXg1" src="Images\missileXg1.png" alt="missileXg1" hidden/>
+			<img id="missileXb" src="Images\missileXb.png" alt="missileXb" hidden/>
+			<img id="missileXb1" src="Images\missileXb1.png" alt="missileXb1" hidden/>
+      		<img id="building1" src="Images\building1.png" alt="building1" hidden/>
+	  		<img id="building2" src="Images\building2.png" alt="building2" hidden/>
+	  		<img id="building3" src="Images\building3.png" alt="building3" hidden/>
+	  		<img id="man1" src="Images\man1.png" alt="man1" hidden/>
+	  		<img id="soldier" src="Images\soldier.png" alt="soldier" hidden/>
+	  		<img id="startBtn" src="Images\startBtn.png" alt="startBtn" hidden/>
+			<img id="airplane" src="Images\airplane.png" alt="airplane" hidden/>
+			<img id="explosion1" src="Images\explosion1.png" alt="explosion1" hidden/>
+			<img id="explosion2" src="Images\explosion2.png" alt="explosion2" hidden/>
+			<img id="target" src="Images\alien_target.png" alt="target" hidden/>
+
+
+
+      		<p><input id = "startButton" type = "button" value = "Start Game" style="margin-left:30%;">
+      		</p>
+      		</div>
+      
+      		<!-- ## About Page ## -->
+ 
+			<div id="boxes">
+     			<div id="dialog" class="window">
+     			<h3 style="text-align:center;">About The Site:</h3>
+        		<span><b>Pedro Gusman - 034675413 & Oleg Shmuelov - 319511010</b><br></span>
+        		<h4>JQuery Plagins:</h4>
+        		<span>Validator, Datepicker, Modal window</span>
+        		
+        		<h4>New features:</h4>
+        		<span>Approching targets, 3-Hit Blocker, Friendly target</span>
+        		        		
+        		<h4>Difficulties developing this site:</h4>
+        		<span>JS sometimes confuses between string and numbers<br>
+        			  The compability between browsers<br></span>
+        		<h4>We didn`t use Temaplates</h4>
+        		<a href="http://pedro.cloudapp.net" style="font-size:26px;">Pedro`s site</a><a href="http://oleg.cloudapp.net" style="font-size:26px;">Oleg`s site</a>
+        		
+            	<span style="text-align:center;"><a href="#" class="close" id="close">Close it</a></span>
+    			</div>    
+			</div>	  		
+	  	</div>
+	  </div>
+	  <div id="mask"></div>
+	  <div id="footer"><b>Cannon Ball Game © Pedro Gusman & Oleg Shmuelov | </b><a href="mailto:pedrog@post.bgu.ac.il" class="pass">Contact us</a>
+	  </div>
+         
+      
+   </body>
+</html>
